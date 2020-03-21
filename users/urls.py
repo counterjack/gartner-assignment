@@ -7,14 +7,9 @@ from users.views import (
     ManagerDashboardAPI, AssociateDashboardAPI, DashboardRedirectAPI, LoginView, LogoutView, 
     ClientAttributeTransactionView)
 
-router = routers.SimpleRouter()
-# router.register(r'manager-dashboard', ManagerDashboardAPI.as_view)
-
-urlpatterns = router.urls
-
 
 urlpatterns = [
-    path('login/', LoginView.as_view(), name="user-login"),
+    path(r'', LoginView.as_view(), name="user-login"),
     path('logout/', LogoutView.as_view(), name="user-logout"),
     url(r'^dashboard', DashboardRedirectAPI.as_view(), name="dashboard"),
     url(r'^manager-dashboard', ManagerDashboardAPI.as_view(), name="manager-dashboard"),
