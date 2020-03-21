@@ -1,0 +1,74 @@
+{% load static %}
+<html>
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div style="height:40px; background-color:mintcream; text-align: center;">
+        <span style="font-size:20px; text-align: center;display: inline-block;">Welcome {{ request.user }}</span>
+        <span style="float: right;"><a href='{% url "users:user-logout" %}'>LogOut </a></span>
+    </div>
+    <div style="text-align: center; width: 100%; margin-top: 5%;">
+        <table style="font-size: 24px; display: inline-block;" border="2px solid black;">
+            <tr>
+                <th>Associate</th>
+                <th>Client </th>
+                <th>Attribute</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+                <th>Request Date</th>
+                <th>Accept/Reject</th>
+            </tr>
+            {% for item in data %}
+            <tr id="{{item.id}}">
+                <td>{{ item.nested_associate_client.nested_associate.username|title }}</td>
+                <td>{{ item.nested_associate_client.nested_client.first_name|title }}</td>
+                <td>{{ item.attribute_name }}</td>
+                <td>{{ item.attribute_old_value }}</td>
+                <td>{{ item.attribute_new_value }}</td>
+                <td>{{ item.created_at }}</td>
+                <td>
+                    <button onclick="takeActionOnPendingAttribute(' {{item.id}} ', '{{request.user.id}}', '{{item.id}}', 'Approved')">Accept</button>
+                    <button onclick="takeActionOnPendingAttribute(' {{item.id}} ', '{{request.user.id}}', '{{item.id}}', 'Rejected')">Reject</button>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+{% csrf_token %}
+<script>
+    function takeActionOnPendingAttribute(row_id, current_user_id, attribute_transaction_id, action_type) {
+        var _confirm = confirm("Are you sure ?");
+        if (_confirm) {
+            $.ajax({
+                url: "{% url 'users:action-on-attribute' %}",
+                data: {
+                    "manager_id": current_user_id,
+                    "transaction_id": attribute_transaction_id,
+                    "action": action_type
+                },
+                dataType: 'json',
+                type: "POST",
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", jQuery("[name=csrfmiddlewaretoken]").val());
+                    xhr.overrideMimeType("text/plain; charset=x-user-defined");
+                },
+                success: function(response) {
+                    if (response.status != 200) {
+                        alert("Unable to review. Please try again .")
+                    } else {
+                        alert("Successfully reviewed.")
+                        location.reload();
+                    }
+                }
+            })
+        }
+
+    }
+</script>
+
+</html>

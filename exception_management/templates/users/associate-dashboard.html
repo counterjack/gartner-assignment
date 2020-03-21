@@ -1,0 +1,31 @@
+{% load static %}
+<html>
+
+<head>
+</head>
+
+<body>
+    <p style="height:40px; background-color:mintcream;">
+        <span style="font-size:20px; text-align: center;display: inline-block;">Welcome {{ request.user }}</span>
+        <span style="float: right;"><a href='{% url "users:user-logout" %}'>LogOut </a></span>
+    </p>
+    <div style="text-align: center; width: 100%;">
+        <table style="font-size: 24px; display: inline-block;" border="2px solid black;">
+            <tr>
+                <th>Client </th>
+                <th>Email</th>
+                <th>Data Joined</th>
+
+            </tr>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.nested_client.username }}</td>
+                <td>{{ item.nested_client.email }}</td>
+                <td>{{ item.nested_client.date_joined }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+
+</html>

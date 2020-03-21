@@ -1,0 +1,21 @@
+{% load static %}
+<html>
+
+<head>
+    <!-- <link rel="stylesheet" href="{% static 'css/styles.scss' %}"> -->
+</head>
+
+<body>
+    <div class="form">
+
+        <form action="{% url 'users:user-login' %}" method="post">
+            {% csrf_token %} {{ form }}
+            <br><br>
+            <input type="submit" value="Submit">
+        </form>
+
+    </div>
+    <!-- /form -->
+</body>
+
+</html>
